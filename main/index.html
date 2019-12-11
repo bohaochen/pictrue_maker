@@ -20,35 +20,69 @@
             font-size: 50px;
         }
 
+        .bgBox {
+            width: 800px;
+            height: 500px;
+            position: relative;
+            color: #fff;
+        }
+
+        
+        .bgBox .floatBox{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .bgBox img{
+            width: 100%;
+            height: 100%;
+        }
+        #textBox {
+            position: absolute;
+            width: 20%;
+            margin: 0 auto;
+            left: 40%;
+            z-index: 9999;
+        }
     </style>
 </head>
 
 <body>
     <span class="font-family-abc">小弟出口来</span>
     <span class="font-family-abc">快乐的一只小跳蛙</span>
-    <br/>
-<div id="textBox">
+    <br />
 
-</div>
-   <script>
+    <div class="bgBox">
+        <div id="textBox">
+
+        </div>
+        <div class="floatBox"></div>
+        <img src="" id="img" alt="">
+    </div>
+    <script>
         var url = "http://127.0.0.1:4399";
+
         function addFontClass(name, fontData, url) {
             var style = document.createElement("style");
             style.type = "text/css";
             var classStr = "";
             Object.keys(fontData).map((item, index) => {
-                console.log(fontData[item].style[7],"----",item)
+                console.log(fontData[item].style[7], "----", item)
 
-                classStr += ("@font-face" + "{"
-                    + "font-family:'" + name+"_font_"+item + "';" 
-                    +"src:url('" + url + "/api/buildFont?fontFamily=" + fontData[item].style[7] + "&text=" + fontData[item].text + "');" 
-                    +"font-weight:normal;" 
-                    +"font-style:normal;"
-                    +"}")
-                    classStr += ("."+ name+"_font_"+item + "{"
-                    + "font-family:'" + name+"_font_"+item + "';" 
-                    +"font-size:50px;"
-                    +"}")
+                classStr += ("@font-face" + "{" +
+                    "font-family:'" + name + "_font_" + item + "';" +
+                    "src:url('" + url + "/api/buildFont?fontFamily=" + fontData[item].style[7] + "&text=" +
+                    fontData[item].text + "');" +
+                    "font-weight:normal;" +
+                    "font-style:normal;" +
+                    "}")
+                classStr += ("." + name + "_font_" + item + "{" +
+                    "font-family:'" + name + "_font_" + item + "';" +
+                    "font-size:50px;" +
+                    "}")
             })
             style.appendChild(document.createTextNode(classStr));
             var head = document.getElementsByTagName("head")[0];
@@ -58,8 +92,9 @@
         xhr.open('post', 'http://127.0.0.1:4399/api/getFontFamilys', true);
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         var textObj = {
-            "style":"现代商务",
-            "title": "创創意集会", "subhead": "创意点亮枯燥生活",
+            "style": "沉稳现代商务",
+            "title": "创創意集会",
+            "subhead": "创意点亮枯燥生活",
             "content": "站酷(ZCOOL),中国设计师互动平台。深耕设计领域十二年,站酷聚集了650万设计师、摄影师、插画师、艺术家、创意人,设计创意群体中具有较高的影响力与号召力"
         }
         data = JSON.stringify(textObj);
@@ -68,23 +103,40 @@
             console.log('request success');
             var fontData = JSON.parse(xhr.response);
             var name = "test";
-            addFontClass(name,fontData,url);
+            addFontClass(name, fontData, url);
             var box = document.getElementById("textBox");
             var title = document.createElement("div");
-            title.className=name+"_font_title";
-            title.innerHTML=fontData.title.text;
+            title.className = name + "_font_title";
+            title.innerHTML = fontData.title.text;
             var subhead = document.createElement("div");
-            subhead.className=name+"_font_subhead";
-            subhead.innerHTML=fontData.subhead.text;
+            subhead.className = name + "_font_subhead";
+            subhead.innerHTML = fontData.subhead.text;
             var content = document.createElement("div");
-            content.className=name+"_font_content";
-            content.innerHTML=fontData.content.text;
+            content.className = name + "_font_content";
+            content.innerHTML = fontData.content.text;
             box.append(title)
             box.append(subhead)
             box.append(content)
+        };
+
+
+
+        let xhr1 = new XMLHttpRequest();
+        xhr1.open('post', 'http://127.0.0.1:4399/api/getBackground', true);
+        xhr1.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        var textObj = {
+            "style": "沉稳现代商务",
+        }
+        var data1 = JSON.stringify(textObj);
+        xhr1.send(data1);
+        xhr1.onload = e => {
+            console.log('request success');
+            var fontData = JSON.parse(xhr1.response);
+            var url = fontData.url;
+            var params = fontData.data;
+            document.getElementById("img").src = url;
         };
     </script>
 </body>
 
 </html>
-
