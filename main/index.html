@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        @font-face {
+            font-family: 'aabbcc';
+            src: url('http://127.0.0.1:4399/api/buildFont?fontFamily=包图小白体&text=快乐的一只小跳蛙');
+
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        .font-family-abc {
+            font-family: "aabbcc";
+            font-size: 50px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <span class="font-family-abc">小弟出口来</span>
+    <span class="font-family-abc">快乐的一只小跳蛙</span>
+    <br/>
+<div id="textBox">
+
+</div>
+   <script>
+        var url = "http://127.0.0.1:4399";
+        function addFontClass(name, fontData, url) {
+            var style = document.createElement("style");
+            style.type = "text/css";
+            var classStr = "";
+            Object.keys(fontData).map((item, index) => {
+                console.log(fontData[item].style[7],"----",item)
+
+                classStr += ("@font-face" + "{"
+                    + "font-family:'" + name+"_font_"+item + "';" 
+                    +"src:url('" + url + "/api/buildFont?fontFamily=" + fontData[item].style[7] + "&text=" + fontData[item].text + "');" 
+                    +"font-weight:normal;" 
+                    +"font-style:normal;"
+                    +"}")
+                    classStr += ("."+ name+"_font_"+item + "{"
+                    + "font-family:'" + name+"_font_"+item + "';" 
+                    +"font-size:50px;"
+                    +"}")
+            })
+            style.appendChild(document.createTextNode(classStr));
+            var head = document.getElementsByTagName("head")[0];
+            head.appendChild(style);
+        }
+        let xhr = new XMLHttpRequest();
+        xhr.open('post', 'http://127.0.0.1:4399/api/getFontFamilys', true);
+        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        var textObj = {
+            "style":"现代商务",
+            "title": "创創意集会", "subhead": "创意点亮枯燥生活",
+            "content": "站酷(ZCOOL),中国设计师互动平台。深耕设计领域十二年,站酷聚集了650万设计师、摄影师、插画师、艺术家、创意人,设计创意群体中具有较高的影响力与号召力"
+        }
+        data = JSON.stringify(textObj);
+        xhr.send(data);
+        xhr.onload = e => {
+            console.log('request success');
+            var fontData = JSON.parse(xhr.response);
+            var name = "test";
+            addFontClass(name,fontData,url);
+            var box = document.getElementById("textBox");
+            var title = document.createElement("div");
+            title.className=name+"_font_title";
+            title.innerHTML=fontData.title.text;
+            var subhead = document.createElement("div");
+            subhead.className=name+"_font_subhead";
+            subhead.innerHTML=fontData.subhead.text;
+            var content = document.createElement("div");
+            content.className=name+"_font_content";
+            content.innerHTML=fontData.content.text;
+            box.append(title)
+            box.append(subhead)
+            box.append(content)
+        };
+    </script>
+</body>
+
+</html>
+
